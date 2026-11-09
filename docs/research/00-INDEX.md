@@ -6,6 +6,8 @@ Written 2026-09-27 by the completeness critic, after reading every file in this 
 
 Tags: **[DATA]** client game data · **[VERIFIED]** official or wiki rule text, or a screenshot · **[ASSUMED]** a proposal, kept in config.
 
+规程·序列Ⅰ（`act3autochess@V3_1`）的固定来源和待核实项见 [规则验收矩阵](regulation-sequence-i.md)，Linux 接入步骤与实际检查结果见 [接入与复验记录](regulation-integration-validation.md)。以下数值保留原盟约版本的作用域。
+
 ## 1. Files
 
 | File | What it holds | Key machine paths |
