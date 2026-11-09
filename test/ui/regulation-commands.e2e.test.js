@@ -38,10 +38,16 @@ test('regulation HUD: click command, refusal state, and drag onto a highlighted 
     await c.click('[data-testid="band-command"]');
     await c.page.waitForFunction(() => globalThis.__SP__.store.get().match.private.command.cooldown > 0);
     const used = await state(c); assert.ok(used.funds > before.funds); assert.equal(used.command.cooldown, used.funds - before.funds);
-    await c.click('[data-testid="band-command"]'); assert.equal((await state(c)).funds, used.funds);
+    assert.equal(await c.page.$eval('[data-testid="band-command"]', el => el.getAttribute('aria-disabled')), 'true');
+    // This gesture deliberately targets the unavailable button; Client.click otherwise waits for it to become usable.
+    await c.click('[data-testid="band-command"]', null, { any: true });
+    assert.equal((await state(c)).funds, used.funds);
     await request(c, 'g.test', { cmd: 'strategy', args: { id: 'band_survive' } });
     await request(c, 'g.test', { cmd: 'funds', args: { amount: 20 } });
-    const chessId = await c.page.evaluate(() => Object.values(globalThis.__SP__.data.get('chess')).find(c => c.tier === 2 && !c.isGolden && !c.isDiy).chessId);
+    const chessId = await c.page.evaluate(() => {
+      const banned = new Set(globalThis.__SP__.store.get().match.public.bannedChess);
+      return Object.values(globalThis.__SP__.data.get('chess')).find(c => c.tier === 2 && !c.isGolden && !c.isDiy && !banned.has(c.chessId)).chessId;
+    });
     await request(c, 'g.test', { cmd: 'chess', args: { id: chessId } });
     await cameraSettled(c.page);
     const target = (await state(c)).command.targets[0]; assert.ok(target?.uid);

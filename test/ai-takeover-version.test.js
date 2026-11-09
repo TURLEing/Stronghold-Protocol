@@ -90,7 +90,8 @@ test.describe('AI handover in an official version host', { concurrency: 1 }, () 
 
   async function settledBot(room, host) {
     const first = await botInventory(room);
-    await host.waitFor('m.public', (m) => m.phase === 'PREP' && m.players.some((p) => p.isBot && p.ready), 30000);
+    await host.waitFor('m.public', (m) => m.phase === 'PREP'
+      && m.players.some((p) => p.playerId === first.bot.playerId && p.isBot && p.ready), 30000);
     const done = await botInventory(room);
     const bot = done.view.players.find((p) => p.playerId === first.bot.playerId);
     assert.ok(bot.funds !== first.bot.funds || pieceKey(bot.pieceUids) !== pieceKey(first.bot.pieceUids),
